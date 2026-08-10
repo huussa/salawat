@@ -14,32 +14,39 @@
     <main class="min-h-screen flex flex-col justify-center px-4 py-6">
       <!-- dates -->
       <section class="text-center mb-8">
-        <h1
-          id="hijri-date"
-          class="text-3xl sm:text-4xl font-bold mb-2"
-        >
+        <h1 id="hijri-date" class="text-3xl sm:text-4xl font-bold mb-2">
           جاري التحميل...
         </h1>
 
-        <p
-          id="gregorian-date"
-          class="text-2xl sm:text-3xl"
-        >
-        </p>
+        <p id="gregorian-date" class="text-2xl sm:text-3xl font-bold"></p>
       </section>
 
       <!-- prayes timings -->
       <section
         id="prayer-times"
         class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-5 max-w-5xl w-full mx-auto"
-      >
-      </section>
+      ></section>
     </main>
 
     <script>
       const hijriDate = document.querySelector("#hijri-date");
       const gregorianDate = document.querySelector("#gregorian-date");
       const prayerTimes = document.querySelector("#prayer-times");
+
+      const months = {
+        January: "يناير",
+        February: "فبراير",
+        March: "مارس",
+        April: "أبريل",
+        May: "مايو",
+        June: "يونيو",
+        July: "يوليو",
+        August: "أغسطس",
+        September: "سبتمبر",
+        October: "أكتوبر",
+        November: "نوفمبر",
+        December: "ديسمبر",
+      };
 
       const prayers = [
         {
@@ -68,20 +75,16 @@
         },
       ];
 
-      const months = {
-        "January": "يناير",
-        "February": "فبراير",
-        "March": "مارس",
-        "April": "أبريل",
-        "May": "مايو",
-        "June": "يونيو",
-        "July": "يوليو",
-        "August": "أغسطس",
-        "September": "سبتمبر",
-        "October": "أكتوبر",
-        "November": "نوفمبر",
-        "December": "ديسمبر",
-      }
+      const convertTo12Hour = (time) => {
+        let [hours, minutes] = time.split(":");
+
+        hours = Number(hours);
+
+        hours = hours % 12 || 12;
+
+        return `${String(hours).padStart(2, "0")}:${minutes}`;
+      };
+
       const getPrayerTimes = async () => {
         try {
           const response = await fetch(
@@ -118,14 +121,14 @@
                     `;
 
             card.innerHTML = `
-                        <h2 class="text-2xl sm:text-3xl font-bold mb-3">
-                            ${prayer.name}
-                        </h2>
+              <h2 class="text-2xl sm:text-3xl font-bold mb-3">
+                  ${prayer.name}
+              </h2>
 
-                        <p class="text-4xl sm:text-5xl font-black tracking-wide">
-                            ${timings[prayer.key]}
-                        </p>
-                    `;
+              <p class="text-3xl sm:text-4xl font-black tracking-wide">
+                  ${convertTo12Hour(timings[prayer.key])}
+              </p>
+          `;
 
             prayerTimes.appendChild(card);
           });
